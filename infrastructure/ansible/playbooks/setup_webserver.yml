@@ -1,0 +1,8 @@
+---
+- name: Setup Web Servers
+  hosts: webservers
+  become: yes
+
+  roles:
+    - common
+    - docker
