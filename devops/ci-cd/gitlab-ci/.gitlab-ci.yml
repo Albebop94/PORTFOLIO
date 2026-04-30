@@ -1,0 +1,78 @@
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  PYTHON_VERSION: "3.12"
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""
+
+.backend_rules:
+  rules:
+    - changes:
+        - backend/**/*
+        - devops/docker/Dockerfile.multi-stage
+
+.frontend_rules:
+  rules:
+    - changes:
+        - frontend/**/*
+
+# --- Backend Jobs ---
+backend:lint:
+  stage: test
+  image: python:$PYTHON_VERSION-slim
+  extends: .backend_rules
+  before_script:
+    - pip install uv
+    - cd backend
+    - uv sync --dev
+  script:
+    - uv run ruff check .
+    - uv run ruff format --check .
+
+backend:test:
+  stage: test
+  image: python:$PYTHON_VERSION-slim
+  extends: .backend_rules
+  before_script:
+    - pip install uv
+    - cd backend
+    - uv sync --dev
+  script:
+    - uv run pytest tests/ --cov=app --cov-report=xml
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: backend/coverage.xml
+
+backend:build:
+  stage: build
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  extends: .backend_rules
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHA -t $CI_REGISTRY_IMAGE/backend:latest -f devops/docker/Dockerfile.multi-stage backend/
+    - docker push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE/backend:latest
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+# --- Frontend Jobs ---
+frontend:build:
+  stage: build
+  image: node:20-alpine
+  extends: .frontend_rules
+  before_script:
+    - cd frontend
+    - npm ci
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - frontend/dist/
+    expire_in: 1 week

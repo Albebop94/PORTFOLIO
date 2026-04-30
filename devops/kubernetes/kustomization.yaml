@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - base/deployment.yaml
+  - base/service.yaml
+  - base/ingress.yaml
+
+commonLabels:
+  managed-by: kustomize
+
+# Example of how you would generate a ConfigMap
+# configMapGenerator:
+#   - name: backend-config
+#     literals:
+#       - LOG_LEVEL=INFO

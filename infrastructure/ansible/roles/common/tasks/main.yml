@@ -1,0 +1,22 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: Install common essential packages
+  apt:
+    name:
+      - curl
+      - wget
+      - vim
+      - git
+      - htop
+      - ufw
+    state: present
+
+- name: Ensure UFW is enabled and allows SSH
+  ufw:
+    rule: allow
+    name: OpenSSH
+    state: enabled

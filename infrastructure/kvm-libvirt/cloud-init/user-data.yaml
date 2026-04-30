@@ -1,0 +1,33 @@
+#cloud-config
+
+# Update apt database and upgrade packages on first boot
+package_update: true
+package_upgrade: true
+
+# Add groups
+groups:
+  - docker
+
+# Create user and configure SSH access
+users:
+  - default
+  - name: sysadmin
+    gecos: System Administrator
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    groups: users, admin, docker
+    shell: /bin/bash
+    lock_passwd: true
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQ... # Replace with actual public key
+
+# Install essential packages
+packages:
+  - qemu-guest-agent
+  - htop
+  - curl
+  - git
+
+# Run arbitrary commands after the boot process
+runcmd:
+  - systemctl enable --now qemu-guest-agent
+  - echo "VM Provisioned by Cloud-Init" > /etc/motd
