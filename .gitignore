@@ -1,0 +1,18 @@
+# AI / Agents internal files
+AGENT_RULES.md
+CONTEXT.md
+feedback.md
+
+# AI workflows and docs (local Kanban)
+docs/kanban/
+workflows/
+.agents/
+.agent/
+_agents/
+_agent/
+
+# General IDEs and OS
+.vscode/
+.idea/
+.DS_Store
+*.swp
