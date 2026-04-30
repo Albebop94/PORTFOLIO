@@ -1,0 +1,65 @@
+---
+const skills = [
+  { category: "Sysadmin & Core", items: ["Debian / Linux", "Apache / Nginx", "PostgreSQL", "LDAP / SSH / VPN"] },
+  { category: "Virtualization & Containers", items: ["Proxmox / KVM / LXC", "Docker / Compose", "Kubernetes (K8s)", "Bare-metal & Racks"] },
+  { category: "Cloud Computing", items: ["Google Cloud (GCP)", "Amazon Web Services (AWS)"] },
+  { category: "DevOps & Automation", items: ["Terraform / Ansible", "CI/CD Pipelines", "Prometheus / Grafana", "Agile / Kanban"] },
+  { category: "Software Development", items: ["Python 3.12+", "FastAPI / Pydantic", "SQLAlchemy", "DDD / Clean Arch"] },
+  { category: "Architecture & Systems", items: ["HAProxy Load Balancing", "API Gateways", "REST / gRPC", "RabbitMQ"] }
+];
+---
+<section id="tech-stack" class="tech-stack container">
+  <h2 class="section-title">Core Competencies</h2>
+  <div class="skills-grid">
+    {skills.map(skillGroup => (
+      <div class="skill-card glass-panel">
+        <h3>{skillGroup.category}</h3>
+        <ul>
+          {skillGroup.items.map(item => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .tech-stack {
+    padding: 6rem 0;
+  }
+  .section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: var(--text-heading);
+  }
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  .skill-card h3 {
+    color: var(--accent-cyan);
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 0.5rem;
+  }
+  .skill-card ul {
+    list-style: none;
+    padding: 0;
+  }
+  .skill-card li {
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-left: 1.5rem;
+    color: var(--text-main);
+  }
+  .skill-card li::before {
+    content: '▹';
+    position: absolute;
+    left: 0;
+    color: var(--accent-cyan-dark);
+  }
+</style>
