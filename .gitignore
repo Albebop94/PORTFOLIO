@@ -5,7 +5,7 @@ feedback.md
 
 # AI workflows and docs (local Kanban)
 docs/kanban/
-workflows/
+/workflows/
 .agents/
 .agent/
 _agents/
