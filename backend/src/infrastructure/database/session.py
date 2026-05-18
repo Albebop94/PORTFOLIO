@@ -17,3 +17,8 @@ def init_db(database_url: str):
 def get_session_factory():
     global AsyncSessionLocal
     return AsyncSessionLocal
+
+
+def get_engine():
+    global engine
+    return engine

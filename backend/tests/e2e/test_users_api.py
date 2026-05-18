@@ -52,6 +52,7 @@ async def test_create_and_get_user(client: AsyncClient):
 
     # Test Not Found
     import uuid
+
     random_id = uuid.uuid4()
     response = await client.get(f"/api/v1/users/{random_id}")
     assert response.status_code == 404
