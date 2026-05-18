@@ -28,7 +28,7 @@ def session_factory():
 @pytest.mark.asyncio
 async def test_uow_commit(session_factory):
     uow = SqlAlchemyUnitOfWork(session_factory)
-    
+
     async with uow:
         user = User(username="uow_commit_user", email="uow_commit@example.com")
         await uow.users.add(user)
@@ -36,7 +36,9 @@ async def test_uow_commit(session_factory):
 
     # Verify data is committed using a new session
     async with session_factory() as session:
-        result = await session.execute(text("SELECT username FROM users WHERE email='uow_commit@example.com'"))
+        result = await session.execute(
+            text("SELECT username FROM users WHERE email='uow_commit@example.com'")
+        )
         row = result.fetchone()
         assert row is not None
         assert row[0] == "uow_commit_user"
@@ -45,7 +47,7 @@ async def test_uow_commit(session_factory):
 @pytest.mark.asyncio
 async def test_uow_rollback(session_factory):
     uow = SqlAlchemyUnitOfWork(session_factory)
-    
+
     try:
         async with uow:
             user = User(username="uow_rollback_user", email="uow_rollback@example.com")
@@ -57,6 +59,8 @@ async def test_uow_rollback(session_factory):
 
     # Verify data is NOT committed
     async with session_factory() as session:
-        result = await session.execute(text("SELECT username FROM users WHERE email='uow_rollback@example.com'"))
+        result = await session.execute(
+            text("SELECT username FROM users WHERE email='uow_rollback@example.com'")
+        )
         row = result.fetchone()
         assert row is None

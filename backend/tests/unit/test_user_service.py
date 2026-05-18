@@ -1,4 +1,3 @@
-from unittest.mock import AsyncMock
 from uuid import uuid4
 
 import pytest
@@ -62,13 +61,13 @@ def user_service(uow):
 @pytest.mark.asyncio
 async def test_create_user_success(user_service, uow):
     user = await user_service.create_user(username="testuser", email="test@example.com")
-    
+
     assert user.username == "testuser"
     assert user.email == "test@example.com"
-    
+
     # Verify UoW commit was called
     assert uow.committed is True
-    
+
     # Verify user was added to repository
     saved_user = await uow.users.get_by_id(user.id)
     assert saved_user is not None
@@ -80,10 +79,10 @@ async def test_create_user_already_exists(user_service, uow):
     # Setup existing user
     existing_user = User(username="existing", email="test@example.com")
     await uow.users.add(existing_user)
-    
+
     with pytest.raises(UserAlreadyExistsError):
         await user_service.create_user(username="newuser", email="test@example.com")
-        
+
     assert uow.committed is False
 
 
@@ -93,7 +92,7 @@ async def test_get_user_success(user_service, uow):
     user_id = uuid4()
     existing_user = User(username="existing", email="test@example.com", id=user_id)
     await uow.users.add(existing_user)
-    
+
     retrieved_user = await user_service.get_user(user_id)
     assert retrieved_user.id == user_id
     assert retrieved_user.username == "existing"
